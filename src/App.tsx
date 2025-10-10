@@ -2,7 +2,6 @@ import {
     NavigationMenu,
     NavigationMenuContent,
     NavigationMenuItem,
-    NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger
 } from "@/components/ui/navigation-menu"
@@ -18,7 +17,7 @@ function App() {
                     <NavigationMenuList className="flex items-center gap-2.5">
                         <NavigationMenuItem className="">
                             <Link to="/home">
-                                <NavigationMenuTrigger className="bg-green-300 hover:bg-green-600 focus:bg-green-300 data-[state=open]:bg-green-600 data-[state=open]:hover:bg-green-600 data-[state=open]:focus:bg-green-600">
+                                <NavigationMenuTrigger className="h-14 w-40 bg-green-300 text-lg hover:bg-green-600 focus:bg-green-300 data-[state=open]:bg-green-600 data-[state=open]:hover:bg-green-600 data-[state=open]:focus:bg-green-600">
                                     Home
                                 </NavigationMenuTrigger>
                             </Link>
@@ -28,7 +27,7 @@ function App() {
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <Link to="/start">
-                                <NavigationMenuTrigger className="bg-green-300 hover:bg-green-600 focus:bg-green-300 data-[state=open]:bg-green-600 data-[state=open]:hover:bg-green-600 data-[state=open]:focus:bg-green-600">
+                                <NavigationMenuTrigger className="h-14 w-40 bg-green-300 hover:bg-green-600 focus:bg-green-300 data-[state=open]:bg-green-600 data-[state=open]:hover:bg-green-600 data-[state=open]:focus:bg-green-600">
                                     Getting Started
                                 </NavigationMenuTrigger>
                             </Link>
