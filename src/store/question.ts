@@ -2,12 +2,14 @@ import { create } from "zustand"
 
 interface QsStore {
     question: [string, string][]
+    lastIndex: number
     setQuestion: (qsString: string) => void
     getRandomQuestion: () => [string, string]
 }
 
 const useQsStore = create<QsStore>((set, get) => ({
     question: [],
+    lastIndex: -1,
 
     setQuestion: (qsString: string) => {
         if (!qsString?.trim()) {
@@ -47,7 +49,10 @@ const useQsStore = create<QsStore>((set, get) => ({
     getRandomQuestion: () => {
         const questions = get().question
         const count = questions.length
-        const randomIndex = Math.floor(Math.random() * count)
+        let randomIndex = Math.floor(Math.random() * count)
+        while (randomIndex === get().lastIndex) {
+            randomIndex = Math.floor(Math.random() * count)
+        }
         console.log(questions[randomIndex])
         return questions[randomIndex]
     }
