@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Input } from "@/components/ui/input.tsx"
-import { Label } from "@/components/ui/label"
 import useQsStore from "@/store/question"
+import { useTypewriter } from "react-typewriter-plus"
 
 function Home() {
     const [upload, setUpload] = useState<boolean>(false)
-    const [file, setFile] = useState<string>()
-    const { getRandomQuestion, setQuestion, question } = useQsStore()
+    const [nowQuestion, setNowQuestion] = useState<string[]>()
+    const [showAnswer, setShowAnswer] = useState<boolean>(false)
+    const text = useTypewriter(nowQuestion && nowQuestion.length > 0 ? nowQuestion[0] : "", {
+        speed: 80,
+        cursor: false,
+        loop: false,
+        type: "text"
+    })
+    const { getRandomQuestion, setQuestion } = useQsStore()
     const handleFileChange = async (event: any) => {
         const file = event.target.files[0]
         if (!file) return
@@ -19,6 +26,8 @@ function Home() {
 
             const qsString = await readFileAsText(file)
             setQuestion(qsString)
+            await setNowQuestion(getRandomQuestion())
+            setUpload(true)
         } catch (error) {
             console.error("文件处理错误:", error)
         }
@@ -32,31 +41,63 @@ function Home() {
             reader.readAsText(file, "UTF-8")
         })
     }
-    useEffect(() => {
-        console.log(question)
-    }, [question])
+
+    const handleChangeQuestion = async () => {
+        await setNowQuestion(getRandomQuestion())
+        setShowAnswer(false)
+    }
     return (
         <>
-            <div className="flex h-[calc(100vh-64px)] items-center justify-center bg-amber-100 opacity-75">
-                <div className="absolute -mt-25 h-[150px] w-[400px] rounded-lg bg-green-300">
-                    <Input
-                        className="absolute z-10 h-full w-full cursor-pointer bg-green-300 text-lg opacity-0"
-                        id="md"
-                        type="file"
-                        onChange={handleFileChange}
-                    />
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-xl">
-                        点击上传文件
-                        {getRandomQuestion()}
+            {upload ? (
+                <>
+                    <div className="flex h-[calc(100vh-64px)] w-full items-center justify-center bg-amber-100 opacity-75">
+                        <div className="absolute top-30 flex h-[160px] w-[800px] items-center justify-center rounded-lg bg-gray-300/50">
+                            <div className="font-nomo text-3xl text-black">{text}</div>
+                        </div>
+                        <div
+                            className="absolute top-45 right-[220px] flex h-[40px] w-[80px] cursor-pointer items-center justify-center rounded-xl border-2 border-black/50 bg-gray-500"
+                            onClick={() => setShowAnswer(!showAnswer)}
+                        >
+                            <div className="text-white">{showAnswer ? "关闭" : "显示"}答案</div>
+                        </div>
+                        <div className="absolute top-[300px] flex flex-nowrap gap-[120px]">
+                            <div className="flex h-[40px] w-[80px] cursor-pointer items-center justify-center rounded-xl border-2 border-black/50 bg-gray-500">
+                                <div className="text-white">上一题</div>
+                            </div>
+                            <div
+                                className="flex h-[40px] w-[80px] cursor-pointer items-center justify-center rounded-xl border-2 border-black/50 bg-gray-500"
+                                onClick={() => handleChangeQuestion()}
+                            >
+                                <div className="text-white">下一题</div>
+                            </div>
+                        </div>
+
+                        {showAnswer ? (
+                            <div className="absolute top-90 max-h-[400px] w-[1200px] overflow-y-auto rounded-lg bg-gray-300/50 p-[50px]">
+                                <div className="font-nomo relative text-xl text-black">
+                                    {nowQuestion && nowQuestion.length > 0 ? nowQuestion[1] : "此问题答案为空"}
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                </>
+            ) : (
+                <div className="flex h-[calc(100vh-64px)] items-center justify-center bg-amber-100 opacity-75">
+                    <div className="absolute -mt-25 h-[150px] w-[400px] rounded-lg bg-green-300">
+                        <Input
+                            className="absolute z-10 h-full w-full cursor-pointer bg-green-300 text-lg opacity-0"
+                            id="md"
+                            type="file"
+                            onChange={handleFileChange}
+                        />
+                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-3xl">
+                            点击上传文件
+                        </div>
                     </div>
                 </div>
-                <div
-                    className="z-50 h-[50px] w-[50px] bg-red-400"
-                    onClick={getRandomQuestion}
-                >
-                    11111
-                </div>
-            </div>
+            )}
         </>
     )
 }
