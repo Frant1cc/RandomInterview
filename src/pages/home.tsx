@@ -13,7 +13,7 @@ function Home() {
         loop: false,
         type: "text"
     })
-    const { getRandomQuestion, setQuestion } = useQsStore()
+    const { getRandomQuestion, setQuestion, getLastQuestion } = useQsStore()
     const handleFileChange = async (event: any) => {
         const file = event.target.files[0]
         if (!file) return
@@ -46,6 +46,10 @@ function Home() {
         await setNowQuestion(getRandomQuestion())
         setShowAnswer(false)
     }
+    const handleLastQuestion = async () => {
+        await setNowQuestion(getLastQuestion())
+        setShowAnswer(false)
+    }
     return (
         <>
             {upload ? (
@@ -61,7 +65,10 @@ function Home() {
                             <div className="text-white">{showAnswer ? "关闭" : "显示"}答案</div>
                         </div>
                         <div className="absolute top-[300px] flex flex-nowrap gap-[120px]">
-                            <div className="flex h-[40px] w-[80px] cursor-pointer items-center justify-center rounded-xl border-2 border-black/50 bg-gray-500">
+                            <div
+                                className="flex h-[40px] w-[80px] cursor-pointer items-center justify-center rounded-xl border-2 border-black/50 bg-gray-500"
+                                onClick={() => handleLastQuestion()}
+                            >
                                 <div className="text-white">上一题</div>
                             </div>
                             <div
